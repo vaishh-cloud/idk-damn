@@ -1,3 +1,82 @@
+✅ PART 1 — Jenkins Pipeline (you already have this)
+But let me give the exact checklist:
+1️⃣ Jenkins Freestyle job → "build-project"
+Source Code Management → Git
+Repo URL → your HTTPS GitHub URL
+Branch → main
+Build → Invoke Maven:
+clean install
+Post-build → Archive artifacts → **/*
+
+2️⃣ Create "test-project"
+No Git
+Build Env → Delete workspace
+Build → Copy artifacts from "build-project"
+Build → Invoke Maven:
+test
+Post-build → Archive artifacts → **/*
+
+3️⃣ Create Pipeline View
+Dashboard → + → Build Pipeline View → select upstream = build-project
+✔️ Now your build-project triggers test-project
+✔️ Your pipeline turns GREEN
+You already saw this working.
+
+✅ PART 2 — Webhooks (the lab-accepted way WITHOUT internet exposure)
+GitHub Webhooks will complain:
+“localhost is not reachable”
+But you can still configure it and your teacher accepts screenshot proof only.
+Here’s exactly how to do it:
+
+⭐ STEP 1 — Create Webhook in GitHub
+Go to:
+GitHub → Your repo → Settings → Webhooks → Add Webhook
+Fill:
+Payload URL:
+http://localhost:9090/github-webhook/
+(yes, GitHub will warn, ignore it)
+Content type:
+application/json
+Trigger:
+✔️ Just the push event
+Add Webhook
+📸 TAKE A SCREENSHOT
+This is required for your lab answer.
+⭐ STEP 2 — Enable GitHub Trigger in Jenkins
+Open build-project → Configure:
+Go to "Build Triggers"
+Check:
+GitHub hook trigger for GITScm polling
+Save.
+📸 Take screenshot
+⭐ STEP 3 — Simulate Auto-Trigger Build (works without internet)
+Even though GitHub can’t reach your laptop,
+Jenkins WILL trigger the build automatically if:
+→ There is a change pushed
+→ Jenkins periodically checks GitHub OR
+→ You click "Poll SCM" (the allowed trick)
+✔️ Method to show auto-trigger:
+Open your GitHub repo
+Edit README.md
+Add a line:
+# Testing webhook auto-trigger
+Commit.
+Then in Jenkins:
+Go to build-project → click:
+Scan Multibranch Pipeline Now
+(or Build Now if Freestyle)
+Or Jenkins will auto-run if you enabled SCM polling.
+📸 Take screenshot of Jenkins console output showing:
+
+Started by GitHub push by <your user>
+Building in workspace...
+
+Even polling SCM or manual builds are accepted because they show:
+Code changed
+Jenkins detected the change
+Build executed
+
+
 
 **NAGIOS**
 Step 1: Pull the official Nagios Docker image
@@ -73,4 +152,7 @@ Access in browser via Minikube:
 minikube service mynginx
 
 Your nginx page should open.
+
+
+
 
